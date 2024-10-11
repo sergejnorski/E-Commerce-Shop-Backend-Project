@@ -3,6 +3,12 @@ package com.nsc.eshop.security.config;
 import com.nsc.eshop.security.jwt.AuthTokenFilter;
 import com.nsc.eshop.security.jwt.JwtAuthEntryPoint;
 import com.nsc.eshop.security.user.ShopUserDetailsService;
+import io.swagger.v3.oas.models.Components;
+import io.swagger.v3.oas.models.OpenAPI;
+import io.swagger.v3.oas.models.info.Contact;
+import io.swagger.v3.oas.models.info.Info;
+import io.swagger.v3.oas.models.security.SecurityRequirement;
+import io.swagger.v3.oas.models.security.SecurityScheme;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.context.annotation.Bean;
@@ -71,6 +77,16 @@ public class ShopConfig {
         http.authenticationProvider(daoAuthenticationProvider());
         http.addFilterBefore(authTokenFilter(), UsernamePasswordAuthenticationFilter.class);
         return http.build();
+    }
+
+    @Bean
+    public OpenAPI customOpenAPI() {
+        return new OpenAPI()
+                .info(new Info().title("Hello World!").version("1.0.0").description("E-Shop Backend Project").termsOfService("NSC")
+                        .contact(new Contact().name("Sergej Norski").email("noracsergej@gmail.com")))
+                .addSecurityItem(new SecurityRequirement().addList("JavaInUseSecurityScheme"))
+                .components(new Components().addSecuritySchemes("JavaInUseSecurityScheme", new SecurityScheme()
+                        .name("JavaInUseSecurityScheme").type(SecurityScheme.Type.HTTP).scheme("bearer").bearerFormat("JWT")));
     }
 
 }
